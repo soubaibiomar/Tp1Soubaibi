@@ -33,7 +33,7 @@ public class Bb implements Serializable {
 
     private StringBuilder conversation = new StringBuilder();
 
-    // Proprietes du mode debug demandees dans le TP1
+    // Proprietes du mode debug
     private boolean debug;
     private String texteRequeteJson;
     private String texteReponseJson;
@@ -136,7 +136,7 @@ public class Bb implements Serializable {
         }
 
         try {
-            // Appel de l'adaptateur : code du support TP1
+            // Appel de l'adaptateur : code du TP1
             LlmInteraction interaction =
                     jsonAdapter.envoyerRequete(question);
 
@@ -144,7 +144,7 @@ public class Bb implements Serializable {
             this.texteRequeteJson = interaction.questionJson();
             this.texteReponseJson = interaction.reponseJson();
 
-            // On bloque le changement de role apres un succes
+            // Bloquer le changement du role apres un succes
             this.roleSystemeChangeable = false;
 
             // Afficher la question et la reponse
@@ -156,8 +156,8 @@ public class Bb implements Serializable {
 
             FacesMessage message = new FacesMessage(
                     FacesMessage.SEVERITY_ERROR,
-                    "Probleme de connexion avec l'API du LLM",
-                    "Probleme de connexion avec l'API du LLM "
+                    "Problème de connexion avec l'API du LLM",
+                    "Problème de connexion avec l'API du LLM "
                             + e.getMessage()
                             + "\n"
                             + Arrays.toString(e.getStackTrace())
@@ -190,7 +190,8 @@ public class Bb implements Serializable {
     }
 
     /**
-     * Liste des roles systeme du TP0.
+     * Liste des roles systeme.
+     * Trois roles du TP0 + un role bonus personnalise.
      */
     public List<SelectItem> getRolesSysteme() {
 
@@ -198,6 +199,7 @@ public class Bb implements Serializable {
 
             this.listeRolesSysteme = new ArrayList<>();
 
+            // ROLE 1 : Assistant
             String role = """
                     You are a helpful assistant.
                     You help the user to find the information they need.
@@ -208,6 +210,7 @@ public class Bb implements Serializable {
                     new SelectItem(role, "Assistant")
             );
 
+            // ROLE 2 : Traducteur
             role = """
                     You are an interpreter.
                     You translate from English to French
@@ -224,9 +227,11 @@ public class Bb implements Serializable {
             this.listeRolesSysteme.add(
                     new SelectItem(
                             role,
-                            "Traducteur Anglais-Français")
+                            "Traducteur Anglais-Français"
+                    )
             );
 
+            // ROLE 3 : Guide touristique
             role = """
                     Your are a travel guide.
                     If the user type the name of a country
@@ -239,6 +244,36 @@ public class Bb implements Serializable {
 
             this.listeRolesSysteme.add(
                     new SelectItem(role, "Guide touristique")
+            );
+
+            // ROLE 4 : BONUS TP1
+            // Role systeme personnalise : Auditeur Securite IA
+            role = """
+                    You are a cybersecurity auditor specializing
+                    in artificial intelligence applications.
+
+                    Your mission is to analyze AI systems,
+                    REST APIs, chatbots and LLM applications.
+
+                    For every question, answer in French using
+                    the following structure:
+
+                    1. Risque identifié
+                    2. Niveau de gravité (Faible, Moyen, Élevé, Critique)
+                    3. Explication technique
+                    4. Mesures de protection
+                    5. Exemple pratique
+
+                    Focus on prompt injection, data leakage,
+                    insecure API authentication and access control.
+
+                    Do not invent vulnerabilities without evidence.
+                    If information is missing, explain what
+                    needs to be verified.
+                    """;
+
+            this.listeRolesSysteme.add(
+                    new SelectItem(role, "Auditeur Sécurité IA")
             );
         }
 
